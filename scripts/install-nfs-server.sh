@@ -2,7 +2,7 @@
 
 # Install nfs server
 sudo apt update
-sudo apt install nfs-kernel-server
+sudo apt install nfs-kernel-server -y
 
 sudo su
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo systemctl restart docker
+sleep 3
 # IP Range "10.244.0.0/16" is Flannel default range
 #sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.0.0.10
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=$(ip a s eth1 | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
