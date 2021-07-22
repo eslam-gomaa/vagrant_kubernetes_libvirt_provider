@@ -1,3 +1,4 @@
+# k8s
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -8,7 +9,7 @@ k8s_source_image    = "generic/ubuntu1804"
 master_memory       = 4096
 worker_memory       = 2048
 haproxy_memory      = 1024
-create_haproxy_vm   = false
+create_haproxy_vm   = true
 
 
 ##################  ##################  ##################
@@ -16,6 +17,9 @@ create_haproxy_vm   = false
 # Create a shared dir
 # The shared dir is used to share the "join to master" script for all the new Nodes (Which allows us to add nodes at any time)
 Dir.mkdir('share') unless File.directory?('share')
+if File.stat("share").uid == 0
+  FileUtils.chown_R 'orange', 'orange', 'share', verbose: true
+end
 
 ## Create the VMs ##
 
@@ -28,10 +32,11 @@ Vagrant.configure("2") do |config|
     master.vm.hostname = "master"
     master.vm.network :public_network, :dev => "virbr0", :mode => "bridge", :type => "bridge", :ip => "192.168.122.90"
     # master.vm.network :private_network, :ip => "10.0.0.90"
-    master.vm.synced_folder './share', '/var/share'
+    master.vm.synced_folder './share', '/var/share', type: "nfs", nfs_version: 4, nfs_udp: false
     config.vm.provider :libvirt do |libvirt|
     libvirt.cpus = 2
     libvirt.memory = "#{master_memory}"
+    libvirt.title  = "master"
     if k8s_source_image == "generic/ubuntu1804"
         master.vm.provision "install-k8s-components.sh", type: "shell", path: "scripts/install-k8s-components.sh"
     end
@@ -63,13 +68,12 @@ Vagrant.configure("2") do |config|
       worker.vm.hostname = "worker-#{i}"
       worker.vm.network :public_network, :dev => "virbr0", :mode => "bridge", :type => "bridge", :ip => "192.168.122.#{90 + i}"
       # worker.vm.network :private_network, ip: "10.0.0.#{90 + i}"
-      worker.vm.synced_folder './share', '/var/share'
+      worker.vm.synced_folder './share', '/var/share', type: "nfs", nfs_version: 4, nfs_udp: false
       config.vm.provider :libvirt do |libvirt|
       libvirt.cpus = 2
       libvirt.memory = "#{worker_memory}"
-      if k8s_source_image == "generic/ubuntu1804"
-        worker.vm.provision "install-k8s-components.sh", type: "shell", path: "scripts/install-k8s-components.sh"
-      end
+      libvirt.title  = "#worker-#{i}"
+      worker.vm.provision "install-k8s-components.sh", type: "shell", path: "scripts/install-k8s-components.sh", privileged: true
       worker.vm.provision "join-k8s-worker.sh" ,type: "shell", path: "scripts/join-k8s-worker.sh", privileged: true
     end
   end
@@ -80,10 +84,11 @@ if create_haproxy_vm
       config.vm.provider :libvirt do |libvirt|
         libvirt.cpus = 2
         libvirt.memory = "#{haproxy_memory}"
+        libvirt.title  = "haproxy"
       end
       haproxy.vm.hostname = "haproxy"
       config.vm.box = "#{k8s_source_image}"
-      config.vm.network :forwarded_port, guest: 80, host: 8080, host_ip: "0.0.0.0"
+      # config.vm.network :forwarded_port, guest: 80, host: 8080, host_ip: "0.0.0.0"
       haproxy.vm.network :public_network, :dev => "virbr0", :mode => "bridge", :type => "bridge", :ip => "192.168.122.100"
       # haproxy.vm.network :private_network, ip: "10.0.0.100"
       haproxy.vm.provision :shell, path: "scripts/install-haproxy.sh"
