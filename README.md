@@ -4,6 +4,16 @@ This is a Vagrant file for creating a Kubernetes LAB with ability to add worker 
 
 ---
 
+**CAUTION** -- If you're NOT using this Vagrant file as part on course LABs, please comment or delete the following lines
+```ruby
+if File.stat("share").uid == 0
+  FileUtils.chown_R 'orange', 'orange', 'share', verbose: true
+end
+```
+
+---
+
+
 ## Instructions
 
 💎 For creating the vm's for the first time; it's recommended to use `--no-parallel` option to make sure that the master vm is created before the worker nodes
