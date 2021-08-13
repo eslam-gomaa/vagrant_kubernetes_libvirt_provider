@@ -4,7 +4,7 @@ This is a Vagrant file for creating a Kubernetes LAB with ability to add worker 
 
 ---
 
-**CAUTION** -- If you're NOT using this Vagrant file as part on course LABs, please comment or delete the following lines
+**CAUTION** -- If you're NOT using this Vagrant file as part of my course LABs, please comment or delete the following lines
 ```ruby
 if File.stat("share").uid == 0
   FileUtils.chown_R 'orange', 'orange', 'share', verbose: true
