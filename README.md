@@ -40,7 +40,7 @@ vagrant destroy -f
 ```
 vi Vagrantfile
 ```
-Change the number to the desired number of Worker nodes, then execute `vagrant up` to apply changes
+Change `worker_nodes_number` number to the desired number of Worker nodes, then execute `vagrant up` to apply changes
 
 ![image](https://user-images.githubusercontent.com/33789516/129351873-37e37e04-d504-46e8-b2af-f394e7d727cb.png)
 
