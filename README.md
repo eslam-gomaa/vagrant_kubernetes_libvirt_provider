@@ -1,6 +1,6 @@
 # vagrant_kubernetes_libvirt_provider
 
-This is a Vagrant file for creating a Kubernetes LAB with ability to add worker nodes on the fly
+This is a Vagrant file for creating a Kubernetes LAB with the ability to add worker nodes on the fly
 
 ---
 
