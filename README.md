@@ -33,6 +33,19 @@ vagrant destroy -f worker-2
 vagrant destroy -f
 ```
 
+
+💎 Shutdown all the VMs
+
+```
+vagrant halt
+```
+
+💎 Start all the VMs
+
+```
+vagrant up
+```
+
 ---
 
 🌼 To increase the number of worker nodes
