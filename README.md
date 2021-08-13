@@ -1,1 +1,56 @@
 # vagrant_kubernetes_libvirt_provider
+
+This is a Vagrant file for creating a Kubernetes LAB with ability to add worker nodes on the fly
+
+---
+
+## Instructions
+
+💎 For creating the vm's for the first time; it's recommended to use `--no-parallel` option to make sure that the master vm is created before the worker nodes
+
+```
+vagrant up --no-parallel
+```
+
+💎 List the existing VMs
+
+```
+vagrant status
+```
+![image](https://user-images.githubusercontent.com/33789516/129351481-2eeb58e7-bd88-4be6-8fa1-bfc749f8ba70.png)
+
+
+💎 Destroy a single VM
+
+```
+vagrant destroy -f worker-2
+```
+
+
+💎 Destroy all the VMs
+
+```
+vagrant destroy -f
+```
+
+---
+
+🌼 To increase the number of worker nodes
+
+```
+vi Vagrantfile
+```
+Change the number to the desired number of Worker nodes, then execute `vagrant up` to apply changes
+
+![image](https://user-images.githubusercontent.com/33789516/129351873-37e37e04-d504-46e8-b2af-f394e7d727cb.png)
+
+```
+vagrant up
+```
+
+---
+
+Thank you
+
+
+
