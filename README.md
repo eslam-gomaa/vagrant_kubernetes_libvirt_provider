@@ -2,6 +2,10 @@
 
 This is a Vagrant file for creating a Kubernetes LAB with the ability to add worker nodes on the fly
 
+* **The following are also done as part of the setup**
+  * Install Helm
+  * Setup NFS storage class
+
 ---
 
 **CAUTION** -- If you're NOT using this Vagrant file as part of my course LABs, please comment or delete the following lines
