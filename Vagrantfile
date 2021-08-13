@@ -9,7 +9,7 @@ k8s_source_image    = "generic/ubuntu1804"
 master_memory       = 4096
 worker_memory       = 2048
 haproxy_memory      = 1024
-create_haproxy_vm   = true
+create_haproxy_vm   = false
 
 
 ##################  ##################  ##################
@@ -45,6 +45,8 @@ Vagrant.configure("2") do |config|
     master.vm.provision "copy-master.sh", type: "shell", path: "scripts/copy-master.sh", run: "always"
     master.vm.provision "install-helm3.sh", type: "shell", path: "scripts/install-helm3.sh"
     master.vm.provision "install-nfs-server.sh", type: "shell", path: "scripts/install-nfs-server.sh"
+    master.vm.provision "Modifying the PS1 Variable", type: "shell", path: "scripts/ps1.sh"
+    master.vm.provision "Changing user password" ,type: "shell", inline: "echo 'vagrant:#T4/7@kI*~n0pfXhtG&N' | sudo chpasswd"
         # Generate /ec/hosts of the master
         txt="""
 127.0.0.1            localhost
@@ -67,7 +69,6 @@ Vagrant.configure("2") do |config|
       worker.vm.box = "#{k8s_source_image}"
       worker.vm.hostname = "worker-#{i}"
       worker.vm.network :public_network, :dev => "virbr0", :mode => "bridge", :type => "bridge", :ip => "192.168.122.#{90 + i}"
-      # worker.vm.network :private_network, ip: "10.0.0.#{90 + i}"
       worker.vm.synced_folder './share', '/var/share', type: "nfs", nfs_version: 4, nfs_udp: false
       config.vm.provider :libvirt do |libvirt|
       libvirt.cpus = 2
@@ -75,6 +76,8 @@ Vagrant.configure("2") do |config|
       libvirt.title  = "#worker-#{i}"
       worker.vm.provision "install-k8s-components.sh", type: "shell", path: "scripts/install-k8s-components.sh", privileged: true
       worker.vm.provision "join-k8s-worker.sh" ,type: "shell", path: "scripts/join-k8s-worker.sh", privileged: true
+      worker.vm.provision "Modifying the PS1 Variable", type: "shell", path: "scripts/ps1.sh"
+      worker.vm.provision "Changing user password" ,type: "shell", inline: "echo 'vagrant:#T4/7@kI*~n0pfXhtG&N' | sudo chpasswd"
     end
   end
 end
@@ -88,10 +91,10 @@ if create_haproxy_vm
       end
       haproxy.vm.hostname = "haproxy"
       config.vm.box = "#{k8s_source_image}"
-      # config.vm.network :forwarded_port, guest: 80, host: 8080, host_ip: "0.0.0.0"
       haproxy.vm.network :public_network, :dev => "virbr0", :mode => "bridge", :type => "bridge", :ip => "192.168.122.100"
-      # haproxy.vm.network :private_network, ip: "10.0.0.100"
       haproxy.vm.provision :shell, path: "scripts/install-haproxy.sh"
+      haproxy.vm.provision "Modifying the PS1 Variable", type: "shell", path: "scripts/ps1.sh"
+      haproxy.vm.provision "Changing user password" ,type: "shell", inline: "echo 'vagrant:#T4/7@kI*~n0pfXhtG&N' | sudo chpasswd"
     end
   end
 end
