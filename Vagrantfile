@@ -7,8 +7,8 @@
 worker_nodes_number = 2
 k8s_source_image    = "generic/ubuntu1804"
 master_memory       = 4096
-worker_memory       = 2048
-haproxy_memory      = 1024
+worker_memory       = 4096
+haproxy_memory      = 2048
 create_haproxy_vm   = false
 
 
