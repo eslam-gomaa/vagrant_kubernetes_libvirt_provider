@@ -11,7 +11,7 @@ systemctl enable nfs-server
 
 # Export a dir
 mkdir /var/nfs-share
-sudo echo '/var/nfs-share  *(rw)' > /etc/exports
+sudo echo '/var/nfs-share  *(rw,sync,no_subtree_check,no_root_squash)' > /etc/exports
 exportfs -arv
 
 # Validate
